@@ -1,0 +1,29 @@
+name: أخبار الصحة اليومية بالعربية
+
+on:
+  schedule:
+    # GitHub Actions utilise l'heure UTC.
+    # 06:00 UTC = 07:00 au Maroc (UTC+1). Modifie l'heure ici si besoin.
+    - cron: "0 6 * * *"
+  workflow_dispatch:        # bouton "Run workflow" pour tester manuellement
+
+jobs:
+  send-news:
+    runs-on: ubuntu-latest
+    steps:
+      - name: تحميل الكود
+        uses: actions/checkout@v4
+
+      - name: تثبيت Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: تثبيت المتطلبات
+        run: pip install -r requirements.txt
+
+      - name: إرسال أخبار الصحة
+        run: python health_bot.py
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
