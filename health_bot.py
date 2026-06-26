@@ -46,8 +46,6 @@ log = logging.getLogger("health-bot")
 FEEDS = [
     ("RT عربي — صحة",          "https://arabic.rt.com/rss/health/"),
     ("CNN عربي — صحة",         "https://arabic.cnn.com/health/rss"),
-    ("Google أخبار صحية",      "https://news.google.com/rss/search?q=صحة+طب+علاج&hl=ar&gl=AR&ceid=AR:ar&tbs=qdr:d"),
-    ("Google أخبار طبية",      "https://news.google.com/rss/search?q=لقاح+مرض+دراسة+طبية&hl=ar&gl=MA&ceid=MA:ar&tbs=qdr:d"),
 ]
 
 # كلمات مفتاحية للتحقق من أن المقال يتعلق فعلًا بالصحة
@@ -66,7 +64,7 @@ HEALTH_KEYWORDS = {
     "حر", "برد", "إجهاد", "حادث", "إسعاف", "طوارئ",
 }
 
-MAX_AGE_HOURS   = int(os.getenv("MAX_AGE_HOURS", "28"))
+MAX_AGE_HOURS   = int(os.getenv("MAX_AGE_HOURS", "48"))
 MAX_ARTICLES    = int(os.getenv("MAX_ARTICLES", "8"))
 INCLUDE_UNDATED = False
 
