@@ -44,11 +44,8 @@ log = logging.getLogger("health-bot")
 # مصادر RSS للصحة باللغة العربية. يمكنك التعديل بحرية: إضافة، حذف، إعادة ترتيب.
 # أي مصدر غير متاح أو معطوب يُتجاهل تلقائيًا (لا يوقف البوت).
 FEEDS = [
-    ("BBC عربي — صحة",         "https://feeds.bbci.co.uk/arabic/healthcare/rss.xml"),
-    ("منظمة الصحة العالمية",    "https://www.who.int/feeds/entity/mediacentre/news/ar/rss.xml"),
-    ("وِبطِب",                  "https://www.webteb.com/feed"),
-    ("اليوم السابع — صحة",      "https://www.youm7.com/rss/9.xml"),
-    ("صحة نيوز",                "https://www.sahaanews.com/feed"),
+    ("RT عربي — صحة",          "https://arabic.rt.com/rss/health/"),
+    ("CNN عربي — صحة",         "https://arabic.cnn.com/health/rss"),
 ]
 
 # كلمات مفتاحية للتحقق من أن المقال يتعلق فعلًا بالصحة
@@ -87,8 +84,10 @@ def parse_date(entry):
     return None
 
 
-def is_health_related(title, summary=""):
-    """يتحقق أن المقال يحتوي على كلمة مفتاحية صحية."""
+def is_health_related(title, summary="", trusted_source=False):
+    """يتحقق أن المقال يحتوي على كلمة مفتاحية صحية. يتجاوز الفلتر للمصادر الموثوقة."""
+    if trusted_source:
+        return True
     text = (title + " " + summary).lower()
     return any(kw in text for kw in HEALTH_KEYWORDS)
 
@@ -127,7 +126,7 @@ def collect_articles():
                 elif dt < cutoff:
                     continue
 
-                if not is_health_related(title, summary):
+                if not is_health_related(title, summary, trusted_source=True):
                     log.debug("مقال محذوف (غير صحي): %s", title)
                     continue
 
