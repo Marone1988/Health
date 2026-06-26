@@ -46,6 +46,8 @@ log = logging.getLogger("health-bot")
 FEEDS = [
     ("RT عربي — صحة",          "https://arabic.rt.com/rss/health/"),
     ("CNN عربي — صحة",         "https://arabic.cnn.com/health/rss"),
+    ("Google أخبار صحية",      "https://news.google.com/rss/search?q=صحة+طب+علاج&hl=ar&gl=AR&ceid=AR:ar"),
+    ("Google أخبار طبية",      "https://news.google.com/rss/search?q=لقاح+مرض+دراسة+طبية&hl=ar&gl=MA&ceid=MA:ar"),
 ]
 
 # كلمات مفتاحية للتحقق من أن المقال يتعلق فعلًا بالصحة
