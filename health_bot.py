@@ -29,7 +29,7 @@ from datetime import datetime, timezone, timedelta
 
 import requests
 import feedparser
-import anthropic
+from groq import Groq
 
 logging.basicConfig(
     level=logging.INFO,
@@ -65,7 +65,7 @@ MAX_AGE_HOURS   = int(os.getenv("MAX_AGE_HOURS", "28"))
 MAX_ARTICLES    = int(os.getenv("MAX_ARTICLES", "8"))
 INCLUDE_UNDATED = False
 
-ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "").strip()
+GROQ_API_KEY = os.getenv("GROQ_API_KEY", "").strip()
 
 TELEGRAM_TOKEN  = os.getenv("TELEGRAM_TOKEN", "").strip()
 TELEGRAM_CHAT   = os.getenv("TELEGRAM_CHAT_ID", "").strip()
@@ -148,11 +148,11 @@ def collect_articles():
 # ─────────────────────────────────────────────────────────────
 
 def summarize_article(title, summary, source):
-    """يستخدم Claude لتلخيص المقال في ٢-٣ جمل بالعربية."""
-    if not ANTHROPIC_API_KEY:
+    """يستخدم Groq لتلخيص المقال في ٢-٣ جمل بالعربية."""
+    if not GROQ_API_KEY:
         return None
     try:
-        client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
+        client = Groq(api_key=GROQ_API_KEY)
         prompt = f"""أنت محرر صحي محترف. لخّص هذا المقال الصحي في جملتين أو ثلاث جمل بالعربية الفصحى البسيطة.
 اجعل الملخص مفيدًا ومباشرًا. لا تبدأ بـ "الملخص:" أو أي مقدمة.
 
@@ -160,12 +160,12 @@ def summarize_article(title, summary, source):
 المصدر: {source}
 المحتوى: {summary[:800] if summary else 'غير متوفر'}"""
 
-        message = client.messages.create(
-            model="claude-haiku-4-5",
+        response = client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
             max_tokens=200,
             messages=[{"role": "user", "content": prompt}],
         )
-        return message.content[0].text.strip()
+        return response.choices[0].message.content.strip()
     except Exception as ex:
         log.warning("خطأ في التلخيص: %s", ex)
         return None
